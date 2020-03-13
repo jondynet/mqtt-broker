@@ -1,0 +1,18 @@
+{
+  "name": "db-mqtt-broker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "broker.js",
+  "scripts": {
+    "dev": "node broker.js"
+  },
+  "author": "jondynet",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "jade": "^1.11.0",
+    "mosca": "^2.7.0",
+    "redis": "^2.8.0",
+    "socket.io": "^2.0.4"
+  }
+}

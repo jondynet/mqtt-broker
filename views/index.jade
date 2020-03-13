@@ -1,0 +1,78 @@
+doctype html
+html
+  head
+    style.
+      [v-cloak] { display: none; }
+      * {margin:0;padding:0;text-align:center}
+      body{
+        background: #f8f8f8;
+      }
+      #app {
+        margin: 0 auto;
+        width: 90%;
+      }
+      div.box {
+        width: 20%;
+        float: left;
+      }
+      .on, .off {
+        clear: both;
+        background-color: palegreen;
+        box-shadow: 5px 5px 5px #888888;
+        border-radius:5px;
+        width: 90%;
+        margin: 10px;
+      }
+      .off {
+        background-color: red;
+      }
+      .btn {
+        float: right;
+        padding: 0 5px;
+        cursor: pointer;
+      }
+      .dev {
+        margin-left: 10px;
+        height: 50px;
+        line-height: 50px;
+        overflow: hidden;
+      }
+  body
+    div#app
+      h1.title DB MQTT Broker {{ total }}
+      div(v-for="(v,k) in clients" class="box")
+        div(:class="v ? 'on' : 'off'")
+          div(class="btn" v-on:click="remove(k)") ×
+          div(class="dev" v-cloak) {{ k }}
+    script(src='https://cdn.jsdelivr.net/npm/vue')
+    script(src='/socket.io/socket.io.js')
+    script.
+      var socket = io.connect(document.location.protocol + '//' + window.location.host);
+      var app = new Vue({
+        el: '#app',
+        data: {
+            clients: {}
+        },
+        computed: {
+          "total": function () {
+            return Object.keys(this.clients).length;
+          }
+        },
+        methods: {
+          refresh: function(e) {
+            console.log(e);
+          },
+          remove: function(k) {
+            Vue.delete(this.clients, k);
+            socket.emit('remove', { data: k });
+          }
+        },
+        mounted() {
+          console.log('load');
+          socket.emit('mounted', { data: 'all' });
+        }
+      });
+      socket.on('news', function (data) {
+        console.log(data);
+        app.$set(app.clients, data.client, data.connect);
+      });
